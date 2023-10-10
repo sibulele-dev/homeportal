@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id          Int         @id @default(autoincrement())
+  firstname   String
+  lastname    String
+  username    String      @unique
+  email       String      @unique
+  password    String
+  createdAt   DateTime    @default(now())
+  role        Role @default(USER)
+  status      Status @default(NOTVERIFIED)
+  profile     Profile?
+  documents   Documents[]
+}
+
+model Profile {
+  id          Int         @id @default(autoincrement())
+  userId      Int         @unique
+  user        User        @relation(fields: [userId], references: [id])
+  bio         String?
+  picture     String?
+}
+
+model Documents {
+  id          Int         @id @default(autoincrement())
+  userId      Int
+  user        User        @relation(fields: [userId], references: [id])
+  name        String
+  file        String
+}
+
+enum Role {
+  AGENT
+  USER
+}
+
+enum Status {
+  NOTVERIFIED
+  VERIFIED
+}
