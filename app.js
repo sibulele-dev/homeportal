@@ -7,10 +7,12 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+
+const  connectDB = require('./models/connection')
+require('dotenv').config();
 const PORT = 3000;
 
-var indexRouter = require('./routes/index');
-var dashboard = require('./routes/users');
+
 
 var app = express();
 
@@ -30,9 +32,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+connectDB()
 
-app.use('/', indexRouter);
-app.use('/dashboard', dashboard);
+app.use('/', require('./routes/index'));
+app.use('/api', require('./routes/users'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
